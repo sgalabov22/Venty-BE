@@ -145,7 +145,13 @@ STATIC_URL = '/static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
+AUTH_USER_MODEL = 'users.Account'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CLIENT_ID = 'uiOPlToXhxQXDtXVDge3eQVzU6U1eWyBEeoiKfUK'
-CLIENT_SECRET = 'b5BKIw4PIdV4vHMO6sYRnsqHQzjbJoJChmDIz66CjqtHnpraV1g3gT7IuB0qNpgXSqPwlFEKeKWRfr9Ulz6OszMiXOxjAmgo9uzeGX5ArqtiT5uaYbOza605fNVQJHUZ'
+# CLIENT_ID = 'uiOPlToXhxQXDtXVDge3eQVzU6U1eWyBEeoiKfUK'
+# CLIENT_SECRET = 'b5BKIw4PIdV4vHMO6sYRnsqHQzjbJoJChmDIz66CjqtHnpraV1g3gT7IuB0qNpgXSqPwlFEKeKWRfr9Ulz6OszMiXOxjAmgo9uzeGX5ArqtiT5uaYbOza605fNVQJHUZ'
+#
+
+CLIENT_ID = 'oZHsrkFRtiv5ptgMEj6HiOAmAM10BqdzM4Nnq0Uy'
+CLIENT_SECRET = 'sqUzBiZ5lCDGuU28FpxuEHVPaHkOMoucfoPB0WB2j9fTpTun0KxJKOuyK0zjbtfh1Sg2ZEwpbJTg4Qu85X5acz8sDs3FpBAd22IRxE9U7fJPLajSur82UdvMRG6xJsMU'
