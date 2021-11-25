@@ -20,21 +20,24 @@ class RegisterView(APIView):
     def post(self, request, format=None):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        r = requests.post('http://127.0.0.1:8000/o/token/',
-                          data={
-                              'grant_type': 'password',
-                              'fullname': serializer.validated_data['fullname'],
-                              'username': serializer.validated_data['email'],
-                              'password': serializer.validated_data['password'],
-                              'client_id': CLIENT_ID,
-                              'client_secret': CLIENT_SECRET,
-                          }, )
-        print(serializer.validated_data)
-        # print(r.json())
 
-        return r
-        # return Response(r.json(), status=status.HTTP_201_CREATED)
+        print(serializer.validated_data['email'])
+        print(serializer.validated_data['password'])
+
+        data = {
+            'grant_type': 'password',
+            'username': request.data['email'],
+            'password': request.data['password'],
+            'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+        }
+        print(data)
+        r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
+
+        if r.status_code == 201:
+            serializer.save()
+
+        return Response(r.json(), status=r.status_code)
 
 
 @api_view(['POST'])

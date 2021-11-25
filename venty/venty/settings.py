@@ -58,7 +58,7 @@ ROOT_URLCONF = 'venty.urls'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -95,7 +95,7 @@ WSGI_APPLICATION = 'venty.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'venty',
+        'NAME': 'venty_db',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': '127.0.0.1',
@@ -153,5 +153,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CLIENT_SECRET = 'b5BKIw4PIdV4vHMO6sYRnsqHQzjbJoJChmDIz66CjqtHnpraV1g3gT7IuB0qNpgXSqPwlFEKeKWRfr9Ulz6OszMiXOxjAmgo9uzeGX5ArqtiT5uaYbOza605fNVQJHUZ'
 #
 
-CLIENT_ID = 'oZHsrkFRtiv5ptgMEj6HiOAmAM10BqdzM4Nnq0Uy'
-CLIENT_SECRET = 'sqUzBiZ5lCDGuU28FpxuEHVPaHkOMoucfoPB0WB2j9fTpTun0KxJKOuyK0zjbtfh1Sg2ZEwpbJTg4Qu85X5acz8sDs3FpBAd22IRxE9U7fJPLajSur82UdvMRG6xJsMU'
+CLIENT_ID = 'Jy6T1fn7sPHrBCf82F0ksIp2S4FGFgD3srRQWvwj'
+CLIENT_SECRET = 'N6BDLhgF27wkjdLT3HvDAkGVxyG9lpIvdSnSL1YODBaQably4KWlzwmzmcrR0GlgQFVMC8LB0StaSvqx73ronIwpd0PlEKDsSD7wGnmd4CiWM6WjWRnDEtKUwvjn0Alz'
