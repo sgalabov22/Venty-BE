@@ -1,15 +1,17 @@
+from django.contrib.auth import authenticate, logout
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-
+from django.contrib.auth import get_user_model
 import requests
-from rest_framework.views import APIView
-
-from users.serializers import RegisterSerializer
+from rest_framework.views import APIView, View
+from oauth2_provider.models import AccessToken
+from users.serializers import RegisterSerializer, LoginSerializer
 
 from venty.settings import CLIENT_ID, CLIENT_SECRET
 
+UserModel = get_user_model()
 
 # Create your views here.
 
@@ -20,10 +22,7 @@ class RegisterView(APIView):
     def post(self, request, format=None):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        print(serializer.validated_data['email'])
-        print(serializer.validated_data['password'])
-
+        serializer.save()
         data = {
             'grant_type': 'password',
             'username': request.data['email'],
@@ -31,13 +30,38 @@ class RegisterView(APIView):
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
-        print(data)
         r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
 
-        if r.status_code == 201:
-            serializer.save()
-
         return Response(r.json(), status=r.status_code)
+
+
+class LoginView(APIView):
+
+    permission_classes = (AllowAny,)
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = UserModel.objects.get(email=serializer.data['email'])
+        token = AccessToken.objects.get(user_id = user.id)
+
+        response = {
+            'message': 'User logged in  successfully',
+            'token' : token.token,
+            }
+        status_code = status.HTTP_200_OK
+
+        return Response(response, status=status_code)
+
+
+
+# class LogoutView(View):
+#     def get(self, request):
+#         logout(request)
+#         return HttpResponseRedirect(settings.LOGIN_URL)
+
 
 
 @api_view(['POST'])
