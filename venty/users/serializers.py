@@ -20,8 +20,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         #     'password': {'write_only': True}
         # }
 
-class LoginSerializer(serializers.Serializer):
 
+class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=128, write_only=True)
 
@@ -29,37 +29,18 @@ class LoginSerializer(serializers.Serializer):
         email = data.get("email", None)
         password = data.get("password", None)
         user = authenticate(email=email, password=password)
+
+        if user is None:
+            raise serializers.ValidationError(
+                {
+                    "error": 'A user with this email and password is not found.'
+                }
+            )
+
         return {
-            'email':user.email,
+            'email': user.email,
         }
 
-    # email = serializers.CharField(max_length=255)
-    # password = serializers.CharField(max_length=128, write_only=True)
 
-    # def clean_password(self):
-    #     self.user = authenticate(
-    #         email=self.request.data['email'],
-    #         password=self.request.data['password'],
-    #     )
-
-    #     if not self.user:
-    #         raise ValidationError('Email and/or password incorrect')
-
-    # def save(self):
-    #     return self.user
-    # token = serializers.CharField(max_length=255, read_only=True)
-
-
-    # def validate(self, data):
-    #     email = data.get("email", None)
-    #     password = data.get("password", None)
-    #     user = authenticate(email=email, password=password)
-    #     if user is None:
-    #         raise serializers.ValidationError(
-    #             'A user with this email and password is not found.'
-    #         )
-    #     print(user)
-    #     return {
-    #         'email': user.email,
-    #         # 'token': jwt_token
-    #     }
+class RefreshSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField(max_length=255)

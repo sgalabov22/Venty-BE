@@ -6,8 +6,8 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import get_user_model
 import requests
 from rest_framework.views import APIView, View
-from oauth2_provider.models import AccessToken
-from users.serializers import RegisterSerializer, LoginSerializer
+from oauth2_provider.models import AccessToken, RefreshToken
+from users.serializers import RegisterSerializer, LoginSerializer, RefreshSerializer
 
 from rest_framework.permissions import IsAuthenticated
 from venty.settings import CLIENT_ID, CLIENT_SECRET
@@ -27,8 +27,8 @@ class RegisterView(APIView):
         serializer.save()
         data = {
             'grant_type': 'password',
-            'username': request.validated_data['email'],
-            'password': request.validated_data['password'],
+            'username': serializer.validated_data['email'],
+            'password': serializer.validated_data['password'],
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
@@ -45,58 +45,16 @@ class LoginView(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = UserModel.objects.get(email=serializer.data['email'])
+        user = UserModel.objects.get(email=serializer.validated_data['email'])
+
         token = AccessToken.objects.get(user_id=user.id)
+        refresh_token = RefreshToken.objects.get(access_token_id=token.id)
 
-        response = {
-            'message': 'User logged in  successfully',
-            'token': token.token,
-        }
-        status_code = status.HTTP_200_OK
-
-        return Response(response, status=status_code)
-
-
-class LogoutView(View):
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, request):
-        logout(request)
-        return Response()
-
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def token(request):
-    '''
-    {"username": "username", "password": "1234abcd"}
-    '''
-    r = requests.post(
-        'http://127.0.0.1:8000/o/token/',
-        data={
-            'grant_type': 'password',
-            'fullname': request.data['fullname'],
-            'username': request.data['username'],
-            'password': request.data['password'],
-            'client_id': CLIENT_ID,
-            'client_secret': CLIENT_SECRET,
-        },
-    )
-    return Response(r.json(), r.status_code)
-
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def refresh_token(request):
-    '''
-    {"refresh_token": "<token>"}
-    '''
-    if (request.data):
         r = requests.post(
             'http://127.0.0.1:8000/o/token/',
             data={
                 'grant_type': 'refresh_token',
-                'refresh_token': request.data['refresh_token'],
+                'refresh_token': refresh_token.token,
                 'client_id': CLIENT_ID,
                 'client_secret': CLIENT_SECRET,
             },
@@ -104,49 +62,30 @@ def refresh_token(request):
 
         return Response(r.json(), r.status_code)
 
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class RefreshView(APIView):
+    permission_classes = (AllowAny,)
+    serializer_class = RefreshSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        r = requests.post(
+            'http://127.0.0.1:8000/o/token/',
+            data={
+                'grant_type': 'refresh_token',
+                'refresh_token': serializer.validated_data['refresh_token'],
+                'client_id': CLIENT_ID,
+                'client_secret': CLIENT_SECRET,
+            },
+        )
+        return Response(r.json(), r.status_code)
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def revoke_token(request):
-    '''
-    {"token": "<token>"}
-    '''
-    r = requests.post(
-        'http://127.0.0.1:8000/o/revoke_token/',
-        data={
-            'token': request.data['token'],
-            'client_id': CLIENT_ID,
-            'client_secret': CLIENT_SECRET,
-        },
-    )
+class LogoutView(APIView):
+    permission_classes = (IsAuthenticated,)
 
-    if r.status_code == requests.codes.ok:
-        return Response({'message': 'token revoked'}, r.status_code)
-
-    return Response(r.json(), r.status_code)
-
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def register(request):
-#     '''
-#     {"username": "username", "password": "1234abcd"}
-#     '''
-#     serializer = CreateUserSerializer(data=request.data)
-#
-#     if serializer.is_valid():
-#         serializer.save()
-#
-#         r = requests.post('http://127.0.0.1:8000/o/token/',
-#                           data={
-#                               'grant_type': 'password',
-#                               'username': request.data['username'],
-#                               'password': request.data['password'],
-#                               'client_id': CLIENT_ID,
-#                               'client_secret': CLIENT_SECRET,
-#                           },
-#                           )
-#         return Response(r.json(), r.status_code)
-#
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
