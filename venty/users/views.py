@@ -9,9 +9,11 @@ from rest_framework.views import APIView, View
 from oauth2_provider.models import AccessToken
 from users.serializers import RegisterSerializer, LoginSerializer
 
+from rest_framework.permissions import IsAuthenticated
 from venty.settings import CLIENT_ID, CLIENT_SECRET
 
 UserModel = get_user_model()
+
 
 # Create your views here.
 
@@ -25,8 +27,8 @@ class RegisterView(APIView):
         serializer.save()
         data = {
             'grant_type': 'password',
-            'username': request.data['email'],
-            'password': request.data['password'],
+            'username': request.validated_data['email'],
+            'password': request.validated_data['password'],
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
@@ -36,7 +38,6 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
-
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
 
@@ -45,23 +46,23 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
 
         user = UserModel.objects.get(email=serializer.data['email'])
-        token = AccessToken.objects.get(user_id = user.id)
+        token = AccessToken.objects.get(user_id=user.id)
 
         response = {
             'message': 'User logged in  successfully',
-            'token' : token.token,
-            }
+            'token': token.token,
+        }
         status_code = status.HTTP_200_OK
 
         return Response(response, status=status_code)
 
 
+class LogoutView(View):
+    permission_classes = (IsAuthenticated,)
 
-# class LogoutView(View):
-#     def get(self, request):
-#         logout(request)
-#         return HttpResponseRedirect(settings.LOGIN_URL)
-
+    def post(self, request):
+        logout(request)
+        return Response()
 
 
 @api_view(['POST'])

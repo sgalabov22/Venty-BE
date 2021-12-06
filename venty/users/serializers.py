@@ -9,6 +9,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = Account.objects.create_user(**validated_data)
+        authenticate(email=validated_data['email'], password=validated_data['password'])
         return user
 
     class Meta:
