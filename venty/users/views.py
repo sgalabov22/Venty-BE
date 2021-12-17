@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import authenticate, logout
 from rest_framework import status, permissions
 from rest_framework.response import Response
@@ -7,10 +9,13 @@ from django.contrib.auth import get_user_model
 import requests
 from rest_framework.views import APIView, View
 from oauth2_provider.models import AccessToken, RefreshToken
-from users.serializers import RegisterSerializer, LoginSerializer, RefreshSerializer
+from users.serializers import RegisterSerializer, LoginSerializer, RefreshSerializer, CurrentUserSerializer
 
 from rest_framework.permissions import IsAuthenticated
 from venty.settings import CLIENT_ID, CLIENT_SECRET
+from django.forms.models import model_to_dict
+from django.http import JsonResponse
+from django.core import serializers
 
 UserModel = get_user_model()
 
@@ -89,3 +94,14 @@ class LogoutView(APIView):
     def post(self, request):
         logout(request)
         return Response(status=status.HTTP_200_OK)
+
+
+class CurrentUserView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        token = request.headers.get('Authorization').split()[1]
+        user_id = AccessToken.objects.get(token=token).user_id
+        queryset = UserModel.objects.get(id=user_id)
+
+        return Response(data=CurrentUserSerializer(queryset).data, status=status.HTTP_200_OK)

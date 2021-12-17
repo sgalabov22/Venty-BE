@@ -67,6 +67,11 @@ class Account(AbstractBaseUser, PermissionsMixin):
         unique=True,
     )
 
+    profile_picture = models.ImageField(
+        upload_to='staticfiles',
+        blank=True,
+    )
+
     is_staff = models.BooleanField(
         default=False,
     )

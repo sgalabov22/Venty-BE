@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, get_user_model
+from oauth2_provider.models import AccessToken
 from rest_framework import serializers
 from users.models import Account
 
@@ -14,7 +15,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('id', 'email', 'password')
+        fields = ('id', 'email', 'password', 'profile_picture')
         write_only_fields = ('password',)
         # extra_kwargs = {
         #     'password': {'write_only': True}
@@ -44,3 +45,11 @@ class LoginSerializer(serializers.Serializer):
 
 class RefreshSerializer(serializers.Serializer):
     refresh_token = serializers.CharField(max_length=255)
+
+
+
+class CurrentUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Account
+        exclude = ('id', 'password')
