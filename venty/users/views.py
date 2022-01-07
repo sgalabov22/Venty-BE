@@ -13,9 +13,6 @@ from users.serializers import RegisterSerializer, LoginSerializer, RefreshSerial
 
 from rest_framework.permissions import IsAuthenticated
 from venty.settings import CLIENT_ID, CLIENT_SECRET
-from django.forms.models import model_to_dict
-from django.http import JsonResponse
-from django.core import serializers
 
 UserModel = get_user_model()
 
@@ -26,7 +23,7 @@ UserModel = get_user_model()
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request, format=None):
+    def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -37,6 +34,7 @@ class RegisterView(APIView):
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
+        # r = requests.post('http://venty.azurewebsites.net/o/token/', data=data)
         r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
 
         return Response(r.json(), status=r.status_code)
@@ -54,16 +52,14 @@ class LoginView(APIView):
 
         token = AccessToken.objects.get(user_id=user.id)
         refresh_token = RefreshToken.objects.get(access_token_id=token.id)
-
-        r = requests.post(
-            'http://127.0.0.1:8000/o/token/',
-            data={
-                'grant_type': 'refresh_token',
-                'refresh_token': refresh_token.token,
-                'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-            },
-        )
+        data = {
+            'grant_type': 'refresh_token',
+            'refresh_token': refresh_token.token,
+            'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+        }
+        # r = requests.post('https://venty.azurewebsites.net/o/token/', data=data)
+        r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
 
         return Response(r.json(), r.status_code)
 
@@ -75,16 +71,15 @@ class RefreshView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        data = {
+                   'grant_type': 'refresh_token',
+                   'refresh_token': serializer.validated_data['refresh_token'],
+                   'client_id': CLIENT_ID,
+                   'client_secret': CLIENT_SECRET,
+               },
+        # r = requests.post('https://venty.azurewebsites.net/o/token/', data=data)
+        r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
 
-        r = requests.post(
-            'http://127.0.0.1:8000/o/token/',
-            data={
-                'grant_type': 'refresh_token',
-                'refresh_token': serializer.validated_data['refresh_token'],
-                'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-            },
-        )
         return Response(r.json(), r.status_code)
 
 

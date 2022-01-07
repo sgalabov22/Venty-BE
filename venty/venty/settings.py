@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -23,10 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-w@#ny+_sy7u5#x4*z#ohj$qgf^vlxv46a^ku1sj&qug22artt)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -38,15 +36,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'oauth2_provider',
+    'corsheaders',
     'rest_framework',
     'users',
-    'events'
+    'events',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -89,21 +89,41 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'venty.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'venty_db',
+#         'USER': 'venty_admin@venty',
+#         'PASSWORD': 'Events123!',
+#         'HOST': 'venty.postgres.database.azure.com',
+#         'PORT': '5432',
+#     }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'venty_db',
+#         'USER': 'postgres',
+#         'PASSWORD': 'admin',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'venty_db',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': '127.0.0.1',
+        'NAME': 'dfmagsmbmr5sai',
+        'USER': 'rlbishlsvhlfjb',
+        'PASSWORD': 'ed9e6123807a3bf084fdd0efc347a0eb1883dd2a7cf394988ee196a5f0a7f538',
+        'HOST': 'ec2-34-255-21-191.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -123,7 +143,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CORS_ALLOWED_ORIGINS = [
 
+    "http://localhost:8000",
+
+    "http://localhost:4200",
+
+    "https://venty.azurewebsites.net"
+
+]
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -137,11 +165,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    BASE_DIR, 'static',
+)
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
@@ -152,9 +182,9 @@ AUTH_USER_MODEL = 'users.Account'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CLIENT_ID = 'uiOPlToXhxQXDtXVDge3eQVzU6U1eWyBEeoiKfUK'
-# CLIENT_SECRET = 'b5BKIw4PIdV4vHMO6sYRnsqHQzjbJoJChmDIz66CjqtHnpraV1g3gT7IuB0qNpgXSqPwlFEKeKWRfr9Ulz6OszMiXOxjAmgo9uzeGX5ArqtiT5uaYbOza605fNVQJHUZ'
+# CLIENT_ID = 'q4IWWRNxIBN48KIPrLPVSTkgbfxqgdlP9mKRCd0P'
+# CLIENT_SECRET = '5sU91720XAwclBJlrDyyR5WqueUcbXxzpyvfB4AcJYPOy6jYEo9Kv2guRzNxV0naNxF8LZsXJhfB6bzxNq0rPbYfYjSkjkcrFTOzegaSU15Z6Rm052oRS58OzsSb6Hx8'
 #
 
-CLIENT_ID = 'Jy6T1fn7sPHrBCf82F0ksIp2S4FGFgD3srRQWvwj'
-CLIENT_SECRET = 'N6BDLhgF27wkjdLT3HvDAkGVxyG9lpIvdSnSL1YODBaQably4KWlzwmzmcrR0GlgQFVMC8LB0StaSvqx73ronIwpd0PlEKDsSD7wGnmd4CiWM6WjWRnDEtKUwvjn0Alz'
+CLIENT_ID = '2jLBlZPM7xDnP8oyXNLnwrZ4zqgkfKASr48UaL5W'
+CLIENT_SECRET = 'HdCwJvneF6JqTy7yd9AseCOgb4fwHCNQIETkOCZSy0JpNIbk2wNz4Y1JAbptBsh30i7MlLjvyThgeMFIgudcllmQYdugcdIEdttdiGtENFZ1M7Fu1FajhopmCtOWTKzj'
