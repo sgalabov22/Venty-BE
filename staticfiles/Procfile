@@ -1,1 +1,0 @@
-web: gunicorn venty.wsgi
