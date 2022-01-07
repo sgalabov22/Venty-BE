@@ -35,7 +35,8 @@ class RegisterView(APIView):
             'client_secret': CLIENT_SECRET,
         }
         # r = requests.post('http://venty.azurewebsites.net/o/token/', data=data)
-        r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
+        r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
+        # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
 
         return Response(r.json(), status=r.status_code)
 
@@ -59,7 +60,8 @@ class LoginView(APIView):
             'client_secret': CLIENT_SECRET,
         }
         # r = requests.post('https://venty.azurewebsites.net/o/token/', data=data)
-        r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
+        r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
+        # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
 
         return Response(r.json(), r.status_code)
 
@@ -78,7 +80,8 @@ class RefreshView(APIView):
                    'client_secret': CLIENT_SECRET,
                },
         # r = requests.post('https://venty.azurewebsites.net/o/token/', data=data)
-        r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
+        r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
+        # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
 
         return Response(r.json(), r.status_code)
 
