@@ -93,16 +93,6 @@ WSGI_APPLICATION = 'venty.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'venty_db',
-#         'USER': 'venty_admin@venty',
-#         'PASSWORD': 'Events123!',
-#         'HOST': 'venty.postgres.database.azure.com',
-#         'PORT': '5432',
-#     }
-# }
 
 # DATABASES = {
 #     'default': {

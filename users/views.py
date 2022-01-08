@@ -34,7 +34,6 @@ class RegisterView(APIView):
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
-        # r = requests.post('http://venty.azurewebsites.net/o/token/', data=data)
         r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
         # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
 
@@ -59,7 +58,6 @@ class LoginView(APIView):
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
-        # r = requests.post('https://venty.azurewebsites.net/o/token/', data=data)
         r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
         # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
 
@@ -79,7 +77,6 @@ class RefreshView(APIView):
                    'client_id': CLIENT_ID,
                    'client_secret': CLIENT_SECRET,
                },
-        # r = requests.post('https://venty.azurewebsites.net/o/token/', data=data)
         r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
         # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
 
@@ -103,3 +100,5 @@ class CurrentUserView(APIView):
         queryset = UserModel.objects.get(id=user_id)
 
         return Response(data=CurrentUserSerializer(queryset).data, status=status.HTTP_200_OK)
+
+ASDASDLDKFSFSJDFSKDFKNSDASDASDLDKFSFSJDFSKDFKNSD
