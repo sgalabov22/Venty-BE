@@ -1,36 +1,11 @@
-# from django.db import models
-# from django.contrib.auth.models import User
-#
-#
-# class Account(models.Model):
-#     fullname = models.CharField(
-#         max_length=50,
-#         blank=True,
-#     )
-#
-#     email = models.EmailField(
-#         unique=True,
-#     )
-#
-#     user = models.OneToOneField(
-#         User,
-#         on_delete=models.CASCADE,
-#     )
-#
-#     def __str__(self):
-#         return self.email
-#
-#
-from django.apps import apps
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import PermissionsMixin, UserManager
-
+from django.contrib.auth.models import PermissionsMixin
+from cloudinary import models as cloudinary_model
 from django.db import models
 
 
 class VentyUserManager(BaseUserManager):
-
 
     def _create_user(self, email, password, **extra_fields):
         if not email:
@@ -67,8 +42,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
         unique=True,
     )
 
-    profile_picture = models.ImageField(
-        upload_to='staticfiles',
+    profile_picture = cloudinary_model.CloudinaryField(
+        resource_type='image',
         blank=True,
     )
 

@@ -100,5 +100,3 @@ class CurrentUserView(APIView):
         queryset = UserModel.objects.get(id=user_id)
 
         return Response(data=CurrentUserSerializer(queryset).data, status=status.HTTP_200_OK)
-
-ASDASDLDKFSFSJDFSKDFKNSDASDASDLDKFSFSJDFSKDFKNSD

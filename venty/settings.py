@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from os.path import join
 from pathlib import Path
-
+import cloudinary
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -178,3 +178,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CLIENT_ID = 'm7B0ieEIgPEhji89FApNpjjrv3vKOJYrO5aLtKjV'
 CLIENT_SECRET = 'Zw2A0YrCTMeix82mlBcBZnHxPtGo4wUQQ0AppabmE5OtNYKaI7IvnHFRkF9qXxrAl6Qmadhyn8wKpRIRaxNxDucAfybveHyHr0LnbgRRkYIjqAycLeRxCWIGF2rPIGAy'
+
+
+cloudinary.config(
+    cloud_name="dhavld11j",
+    api_key="137955467533472",
+    api_secret="zmrAQXommqofywnVJENgkIk9sx8",
+    secure=True
+)
