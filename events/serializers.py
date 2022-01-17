@@ -28,10 +28,9 @@ class EventSerializerCreate(serializers.ModelSerializer):
         if not data["event_title"][0].isupper():
             raise serializers.ValidationError("Title must start with capital")
         return data
-
-        if data["start_date"] > ["end_date"]:
-            raise serializers.ValidationError("Start date must be before End date of the event")
-        return data
+        # if data["start_date"] > ["end_date"]:
+        #     raise serializers.ValidationError("Start date must be before End date of the event")
+        # return data
 
     class Meta:
         model = Event

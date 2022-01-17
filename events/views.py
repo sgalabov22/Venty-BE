@@ -34,6 +34,7 @@ class EventCreate(APIView):
 
     def post(self, request):
         serializer_data = EventSerializerCreate(data=request.data)
+        print(serializer_data)
         if serializer_data.is_valid():
             serializer_data.save(event_owner=self.request.user)
             return Response(serializer_data.validated_data, status=status.HTTP_201_CREATED)
