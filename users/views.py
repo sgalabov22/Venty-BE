@@ -1,9 +1,9 @@
 import json
 
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import logout
 from rest_framework import status, permissions
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import get_user_model
 import requests
@@ -18,7 +18,8 @@ UserModel = get_user_model()
 
 
 # Create your views here.
-
+# URL = 'https://venty-be.herokuapp.com/o/token/'
+URL = 'http://127.0.0.1:8000/o/token/'
 
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -34,8 +35,7 @@ class RegisterView(APIView):
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
-        r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
-        # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
+        r = requests.post(URL, data=data)
 
         return Response(r.json(), status=r.status_code)
 
@@ -58,8 +58,7 @@ class LoginView(APIView):
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
-        r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
-        # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
+        r = requests.post(URL, data=data)
 
         return Response(r.json(), r.status_code)
 
@@ -77,8 +76,7 @@ class RefreshView(APIView):
                    'client_id': CLIENT_ID,
                    'client_secret': CLIENT_SECRET,
                },
-        r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
-        # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
+        r = requests.post(URL, data=data)
 
         return Response(r.json(), r.status_code)
 

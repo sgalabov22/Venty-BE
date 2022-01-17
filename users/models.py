@@ -36,6 +36,7 @@ class VentyUserManager(BaseUserManager):
 class Account(AbstractBaseUser, PermissionsMixin):
     fullname = models.CharField(
         max_length=20,
+        blank=False
     )
 
     email = models.EmailField(
