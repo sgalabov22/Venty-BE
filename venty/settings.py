@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-w@#ny+_sy7u5#x4*z#ohj$qgf^vlxv46a^ku1sj&qug22artt)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -177,8 +177,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CLIENT_SECRET = '4DMCd45TspikzdJ7v9RA1rZ7Mg7hozLRbTMXu2v2xuPWeU0lqlUg2Uq8AylWo0bieO617K4noGPg0IicIRO3B9hyw8gPc36d479bXkYkFzpWX6RMykEhp5qEPwnYGScd'
 
 #HEROKU
-CLIENT_ID = 'm7B0ieEIgPEhji89FApNpjjrv3vKOJYrO5aLtKjV'
-CLIENT_SECRET = 'Zw2A0YrCTMeix82mlBcBZnHxPtGo4wUQQ0AppabmE5OtNYKaI7IvnHFRkF9qXxrAl6Qmadhyn8wKpRIRaxNxDucAfybveHyHr0LnbgRRkYIjqAycLeRxCWIGF2rPIGAy'
+CLIENT_ID = 'kfMcfoPyIUQXhKIKKN9PpubAIwtq5dX640a4igUY'
+CLIENT_SECRET = 'T7pKoeRKC2c4LgT6eAJPoixkmYKJOkzZEit9tAfu9RTWWkYcwW8eHsKPCAoS8skTQpNRzGYAaPNtABC15wN6E0ye0fazcVUzyvmRdi2zzsRhAccSD3Qbdu0bEOGSM07e'
 
 
 cloudinary.config(
