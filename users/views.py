@@ -18,8 +18,8 @@ UserModel = get_user_model()
 
 
 # Create your views here.
-URL = 'https://venty-be.herokuapp.com/o/token/'
-# URL = 'http://127.0.0.1:8000/o/token/'
+# URL = 'https://venty-be.herokuapp.com/o/token/'
+URL = 'http://127.0.0.1:8000/o/token/'
 
 class RegisterView(APIView):
     permission_classes = (AllowAny,)
@@ -27,7 +27,7 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        user = serializer.save()
         data = {
             'grant_type': 'password',
             'username': serializer.validated_data['email'],
@@ -35,22 +35,28 @@ class RegisterView(APIView):
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
-        r = requests.post(URL, data=data)
+        try:
+            r = requests.post(URL, data=data)
+            return Response(r.json(), status=r.status_code)
+        except:
+            user.delete()
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(r.json(), status=r.status_code)
+
 
 
 class LoginView(APIView):
     permission_classes = (AllowAny,)
-    serializer_class = LoginSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         user = UserModel.objects.get(email=serializer.validated_data['email'])
-
-        token = AccessToken.objects.get(user_id=user.id)
+        try:
+            token = AccessToken.objects.get(user_id=user.id)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         refresh_token = RefreshToken.objects.get(access_token_id=token.id)
         data = {
             'grant_type': 'refresh_token',
@@ -58,9 +64,11 @@ class LoginView(APIView):
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
-        r = requests.post(URL, data=data)
-
-        return Response(r.json(), r.status_code)
+        try:
+            r = requests.post(URL, data=data)
+            return Response(r.json(), r.status_code)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class RefreshView(APIView):
