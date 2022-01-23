@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-w@#ny+_sy7u5#x4*z#ohj$qgf^vlxv46a^ku1sj&qug22artt)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -93,27 +93,27 @@ WSGI_APPLICATION = 'venty.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'venty_db',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dfmagsmbmr5sai',
-#         'USER': 'rlbishlsvhlfjb',
-#         'PASSWORD': 'ed9e6123807a3bf084fdd0efc347a0eb1883dd2a7cf394988ee196a5f0a7f538',
-#         'HOST': 'ec2-34-255-21-191.eu-west-1.compute.amazonaws.com',
+#         'NAME': 'venty_db',
+#         'USER': 'postgres',
+#         'PASSWORD': 'admin',
+#         'HOST': '127.0.0.1',
 #         'PORT': '5432',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dfmagsmbmr5sai',
+        'USER': 'rlbishlsvhlfjb',
+        'PASSWORD': 'ed9e6123807a3bf084fdd0efc347a0eb1883dd2a7cf394988ee196a5f0a7f538',
+        'HOST': 'ec2-34-255-21-191.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -173,13 +173,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #LOCALHOST
 
-CLIENT_ID = 'K4xHAUilvFo7Nh6w64Es6Ip3JmvL1eZLNRXCLtmK'
-CLIENT_SECRET = '4DMCd45TspikzdJ7v9RA1rZ7Mg7hozLRbTMXu2v2xuPWeU0lqlUg2Uq8AylWo0bieO617K4noGPg0IicIRO3B9hyw8gPc36d479bXkYkFzpWX6RMykEhp5qEPwnYGScd'
+# CLIENT_ID = 'K4xHAUilvFo7Nh6w64Es6Ip3JmvL1eZLNRXCLtmK'
+# CLIENT_SECRET = '4DMCd45TspikzdJ7v9RA1rZ7Mg7hozLRbTMXu2v2xuPWeU0lqlUg2Uq8AylWo0bieO617K4noGPg0IicIRO3B9hyw8gPc36d479bXkYkFzpWX6RMykEhp5qEPwnYGScd'
 
 #HEROKU
-# CLIENT_ID = 'kfMcfoPyIUQXhKIKKN9PpubAIwtq5dX640a4igUY'
-# CLIENT_SECRET = 'T7pKoeRKC2c4LgT6eAJPoixkmYKJOkzZEit9tAfu9RTWWkYcwW8eHsKPCAoS8skTQpNRzGYAaPNtABC15wN6E0ye0fazcVUzyvmRdi2zzsRhAccSD3Qbdu0bEOGSM07e'
-#
+CLIENT_ID = 'kfMcfoPyIUQXhKIKKN9PpubAIwtq5dX640a4igUY'
+CLIENT_SECRET = 'T7pKoeRKC2c4LgT6eAJPoixkmYKJOkzZEit9tAfu9RTWWkYcwW8eHsKPCAoS8skTQpNRzGYAaPNtABC15wN6E0ye0fazcVUzyvmRdi2zzsRhAccSD3Qbdu0bEOGSM07e'
+
 
 cloudinary.config(
     cloud_name="dhavld11j",
