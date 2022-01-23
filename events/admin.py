@@ -5,7 +5,7 @@ from events.models import Event, Guest, Extensions
 
 
 class EventsAdmin(admin.ModelAdmin):
-    list_display = ["created_at", "modified_at", "start_date", "end_date",
+    list_display = ["id","created_at", "start_date", "end_date",
                     "event_title", "goal", "agenda", "description",
                     "location_id", "event_owner"]
 

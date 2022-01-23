@@ -13,5 +13,8 @@ from events import views
 urlpatterns = [
     path('events', views.EventsList.as_view()),
     path('events/create', views.EventCreate.as_view()),
-    path('event/<int:pk>', views.EventGetUpdateDelete.as_view()),
+    path('events/<int:pk>', views.EventDetailsGetUpdateDelete.as_view()),
+    path('events/<int:pk>/guests', views.EventGuestGetCreate.as_view()),
+    path('events/<int:pk>/users', views.EventGuestCatalogUsers.as_view()),
+    path('events/<int:pk>/guests/<int:guest_pk>', views.EventGuestUpdate.as_view()),
 ]

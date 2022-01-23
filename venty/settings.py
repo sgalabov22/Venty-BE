@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'users',
-    'events',
+    'events.apps.EventsConfig',
 ]
 
 MIDDLEWARE = [
@@ -171,10 +171,12 @@ AUTH_USER_MODEL = 'users.Account'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CLIENT_ID = 'q4IWWRNxIBN48KIPrLPVSTkgbfxqgdlP9mKRCd0P'
-# CLIENT_SECRET = '5sU91720XAwclBJlrDyyR5WqueUcbXxzpyvfB4AcJYPOy6jYEo9Kv2guRzNxV0naNxF8LZsXJhfB6bzxNq0rPbYfYjSkjkcrFTOzegaSU15Z6Rm052oRS58OzsSb6Hx8'
-#
-# #
+#LOCALHOST
+
+# CLIENT_ID = 'K4xHAUilvFo7Nh6w64Es6Ip3JmvL1eZLNRXCLtmK'
+# CLIENT_SECRET = '4DMCd45TspikzdJ7v9RA1rZ7Mg7hozLRbTMXu2v2xuPWeU0lqlUg2Uq8AylWo0bieO617K4noGPg0IicIRO3B9hyw8gPc36d479bXkYkFzpWX6RMykEhp5qEPwnYGScd'
+
+#HEROKU
 CLIENT_ID = 'm7B0ieEIgPEhji89FApNpjjrv3vKOJYrO5aLtKjV'
 CLIENT_SECRET = 'Zw2A0YrCTMeix82mlBcBZnHxPtGo4wUQQ0AppabmE5OtNYKaI7IvnHFRkF9qXxrAl6Qmadhyn8wKpRIRaxNxDucAfybveHyHr0LnbgRRkYIjqAycLeRxCWIGF2rPIGAy'
 
