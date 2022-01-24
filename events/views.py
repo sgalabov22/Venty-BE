@@ -33,7 +33,9 @@ class EventCreate(APIView):
         serializer_data = EventSerializerCreate(data=request.data)
         serializer_data.is_valid(raise_exception=True)
         serializer_data.save(event_owner=self.request.user)
-        return Response(serializer_data.validated_data, status=status.HTTP_201_CREATED)
+        last_event = Event.objects.last()
+        last_event_serializer = EventSerializerList(last_event)
+        return Response(last_event_serializer.data, status=status.HTTP_201_CREATED)
 
 
 class EventDetailsGetUpdateDelete(APIView):
@@ -53,7 +55,9 @@ class EventDetailsGetUpdateDelete(APIView):
             serializer_data = EventSerializerCreate(event, data=request.data)
             serializer_data.is_valid(raise_exception=True)
             serializer_data.save()
-            return Response(serializer_data.validated_data)
+            updated_event = Event.objects.get(id=serializer_data.data["id"])
+            serializer_updated_event = EventSerializerList(updated_event)
+            return Response(serializer_updated_event.data)
         except:
             return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
 

@@ -20,7 +20,7 @@ class EventSerializerCreate(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        exclude = ["id", "created_at", "event_owner"]
+        exclude = ["event_owner"]
 
 
 class AccountSerializer(serializers.ModelSerializer):
