@@ -18,8 +18,8 @@ UserModel = get_user_model()
 
 
 # Create your views here.
-# URL = 'https://venty-be.herokuapp.com/o/token/'
-URL = 'http://127.0.0.1:8000/o/token/'
+URL = 'https://venty-be.herokuapp.com/o/token/'
+# URL = 'http://127.0.0.1:8000/o/token/'
 
 class RegisterView(APIView):
     permission_classes = (AllowAny,)
