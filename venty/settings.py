@@ -109,10 +109,10 @@ WSGI_APPLICATION = 'venty.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dfmagsmbmr5sai',
-        'USER': 'rlbishlsvhlfjb',
-        'PASSWORD': 'ed9e6123807a3bf084fdd0efc347a0eb1883dd2a7cf394988ee196a5f0a7f538',
-        'HOST': 'ec2-34-255-21-191.eu-west-1.compute.amazonaws.com',
+        'NAME': 'd5mfk3c83g7583',
+        'USER': 'acfrsjlsiacmkp',
+        'PASSWORD': '9c85e54efa2a24886378c5b191da6453bcda2eff40d91277b24fc41e7d27ef99',
+        'HOST': 'ec2-54-247-137-184.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
     }
 }

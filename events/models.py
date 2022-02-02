@@ -43,8 +43,8 @@ class Location(models.Model):
 
     geometry = models.OneToOneField(LocationPosition, on_delete=models.CASCADE)
     opening_hours = models.OneToOneField(WorkingHours, on_delete=models.CASCADE, null=True, default=None)
-    photos = models.ManyToManyField(Photos, null=True, default=None)
-    reviews = models.ManyToManyField(LocationReview, null=True, default=None)
+    photos = models.ManyToManyField(Photos, default=None)
+    reviews = models.ManyToManyField(LocationReview, default=None)
 
     def __str__(self):
         return f"{self.name}"
