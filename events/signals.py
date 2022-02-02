@@ -1,8 +1,7 @@
-
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from events.models import Event
-from events.models import Guest
+from guests.models import Guest
 #
 #
 @receiver(post_save, sender=Event)

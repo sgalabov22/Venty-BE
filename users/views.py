@@ -1,7 +1,7 @@
 import json
 
 from django.contrib.auth import logout
-from rest_framework import status, permissions
+from rest_framework import status
 from rest_framework.response import Response
 
 from rest_framework.permissions import AllowAny
@@ -9,6 +9,8 @@ from django.contrib.auth import get_user_model
 import requests
 from rest_framework.views import APIView, View
 from oauth2_provider.models import AccessToken, RefreshToken
+
+from users.models import Account
 from users.serializers import RegisterSerializer, LoginSerializer, RefreshSerializer, CurrentUserSerializer
 
 from rest_framework.permissions import IsAuthenticated
@@ -28,6 +30,8 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        print(serializer.validated_data['email'])
+        print(serializer.validated_data['password'])
         data = {
             'grant_type': 'password',
             'username': serializer.validated_data['email'],
@@ -37,10 +41,15 @@ class RegisterView(APIView):
         }
         try:
             r = requests.post(URL, data=data)
+            if r.status_code != 200:
+                print("user_deleted")
+                user.delete()
             return Response(r.json(), status=r.status_code)
         except:
             user.delete()
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 

@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'events.apps.EventsConfig',
+    'extensions',
+    'guests'
 ]
 
 MIDDLEWARE = [
@@ -96,14 +98,14 @@ WSGI_APPLICATION = 'venty.wsgi.application'
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'venty_db',
+#         'NAME': 'venty_db1',
 #         'USER': 'postgres',
 #         'PASSWORD': 'admin',
 #         'HOST': '127.0.0.1',
 #         'PORT': '5432',
 #     }
 # }
-
+#
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -173,8 +175,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #LOCALHOST
 
-# CLIENT_ID = 'K4xHAUilvFo7Nh6w64Es6Ip3JmvL1eZLNRXCLtmK'
-# CLIENT_SECRET = '4DMCd45TspikzdJ7v9RA1rZ7Mg7hozLRbTMXu2v2xuPWeU0lqlUg2Uq8AylWo0bieO617K4noGPg0IicIRO3B9hyw8gPc36d479bXkYkFzpWX6RMykEhp5qEPwnYGScd'
+# CLIENT_ID = 'R8ZshMuOEd6kSOpYIeWKevin1Luux0jK59bb2op3'
+# CLIENT_SECRET = 'jioi6ybvh8wLZOaFkWjVJ9knIYtHryV9Ushs74qGqhUHdD4vyt24tsrKPIQvZ3bDMLnZQkR8c92bhSjJFURVf6B05u2XEGpDF3G7qyWK8uCg1JiTpfgDfn81vL9IHRpR'
 
 #HEROKU
 CLIENT_ID = 'kfMcfoPyIUQXhKIKKN9PpubAIwtq5dX640a4igUY'
