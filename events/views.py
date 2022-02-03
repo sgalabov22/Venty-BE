@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.contrib.auth import get_user_model
 
+from utility.working_hours import working_hours_as_list, working_hours_as_string
+
 UserModel = get_user_model()
 
 
@@ -29,18 +31,14 @@ class EventCreate(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        data = request.data
-        data["location"]["opening_hours"]["weekly_text"] = ", ".join(
-            data["location"]["opening_hours"]["weekly_text"])
-
-        serializer_data = EventSerializerCreate(data=data)
+        data_wh_string = working_hours_as_string(request.data)
+        serializer_data = EventSerializerCreate(data=data_wh_string)
         serializer_data.is_valid(raise_exception=True)
         serializer_data.save(event_owner=self.request.user)
         last_event = Event.objects.last()
         last_event_serializer = EventSerializerDetails(last_event)
-        data = last_event_serializer.data
-        data["location"]["opening_hours"]["weekly_text"] = (
-            data["location"]["opening_hours"]["weekly_text"].split(", "))
+        serializer_data_copy = last_event_serializer.data
+        data = working_hours_as_list(serializer_data_copy)
         return Response(data, status=status.HTTP_201_CREATED)
 
 
@@ -51,27 +49,23 @@ class EventDetailsGetUpdateDelete(APIView):
         try:
             event = Event.objects.get(id=pk)
             serializer_data = EventSerializerDetails(event)
-            data = serializer_data.data
-            data["location"]["opening_hours"]["weekly_text"] = (
-                data["location"]["opening_hours"]["weekly_text"].split(", "))
+            serializer_data_copy = serializer_data.data
+            data = working_hours_as_list(serializer_data_copy)
             return Response(data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk):
         try:
+            data_wh_string = working_hours_as_string(request.data)
             event = Event.objects.get(id=pk, event_owner=request.user)
-            data = request.data
-            data["location"]["opening_hours"]["weekly_text"] = ", ".join(
-                data["location"]["opening_hours"]["weekly_text"])
-            serializer_data = EventSerializerCreate(event, data=data)
+            serializer_data = EventSerializerCreate(event, data=data_wh_string)
             serializer_data.is_valid(raise_exception=True)
             serializer_data.save()
             updated_event = Event.objects.get(id=serializer_data.data["id"])
             serializer_updated_event = EventSerializerDetails(updated_event)
-            data = serializer_updated_event.data
-            data["location"]["opening_hours"]["weekly_text"] = (
-                data["location"]["opening_hours"]["weekly_text"].split(", "))
+            serializer_data_copy = serializer_updated_event.data
+            data = working_hours_as_list(serializer_data_copy)
             return Response(data)
         except:
             return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
