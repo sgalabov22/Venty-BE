@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'users',
-    'events',
+    'events.apps.EventsConfig',
+    'extensions',
+    'guests'
 ]
 
 MIDDLEWARE = [
@@ -96,21 +98,21 @@ WSGI_APPLICATION = 'venty.wsgi.application'
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'venty_db',
+#         'NAME': 'venty_db1',
 #         'USER': 'postgres',
 #         'PASSWORD': 'admin',
 #         'HOST': '127.0.0.1',
 #         'PORT': '5432',
 #     }
 # }
-
+#
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dfmagsmbmr5sai',
-        'USER': 'rlbishlsvhlfjb',
-        'PASSWORD': 'ed9e6123807a3bf084fdd0efc347a0eb1883dd2a7cf394988ee196a5f0a7f538',
-        'HOST': 'ec2-34-255-21-191.eu-west-1.compute.amazonaws.com',
+        'NAME': 'd5mfk3c83g7583',
+        'USER': 'acfrsjlsiacmkp',
+        'PASSWORD': '9c85e54efa2a24886378c5b191da6453bcda2eff40d91277b24fc41e7d27ef99',
+        'HOST': 'ec2-54-247-137-184.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -171,12 +173,14 @@ AUTH_USER_MODEL = 'users.Account'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CLIENT_ID = 'q4IWWRNxIBN48KIPrLPVSTkgbfxqgdlP9mKRCd0P'
-# CLIENT_SECRET = '5sU91720XAwclBJlrDyyR5WqueUcbXxzpyvfB4AcJYPOy6jYEo9Kv2guRzNxV0naNxF8LZsXJhfB6bzxNq0rPbYfYjSkjkcrFTOzegaSU15Z6Rm052oRS58OzsSb6Hx8'
-#
+#LOCALHOST
 
-CLIENT_ID = 'm7B0ieEIgPEhji89FApNpjjrv3vKOJYrO5aLtKjV'
-CLIENT_SECRET = 'Zw2A0YrCTMeix82mlBcBZnHxPtGo4wUQQ0AppabmE5OtNYKaI7IvnHFRkF9qXxrAl6Qmadhyn8wKpRIRaxNxDucAfybveHyHr0LnbgRRkYIjqAycLeRxCWIGF2rPIGAy'
+# CLIENT_ID = 'R8ZshMuOEd6kSOpYIeWKevin1Luux0jK59bb2op3'
+# CLIENT_SECRET = 'jioi6ybvh8wLZOaFkWjVJ9knIYtHryV9Ushs74qGqhUHdD4vyt24tsrKPIQvZ3bDMLnZQkR8c92bhSjJFURVf6B05u2XEGpDF3G7qyWK8uCg1JiTpfgDfn81vL9IHRpR'
+
+#HEROKU
+CLIENT_ID = 'ugVNkb5ipcPRL3tk4JOgFCToTzoMdRtSNjVHJ7Rv'
+CLIENT_SECRET = 'CsclZcZzIE6uCW2PdLTWMAJGPNa0ae6TXBI8ZuR2IMhGhIhfu4dwD3Tz1YrYDPSr3Ll56FUC2kpEqTzRcFjYqONDOYct2bY8BvCWrImx62njLbY0785eUV9tDDhCmjUm'
 
 
 cloudinary.config(

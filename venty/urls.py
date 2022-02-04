@@ -23,4 +23,5 @@ urlpatterns = [
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('authentication/', include('users.urls')),
     path('', include('events.urls')),
+    path('events/', include('extensions.urls')),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

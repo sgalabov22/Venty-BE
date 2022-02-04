@@ -1,14 +1,16 @@
 import json
 
-from django.contrib.auth import authenticate, logout
-from rest_framework import status, permissions
+from django.contrib.auth import logout
+from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import get_user_model
 import requests
 from rest_framework.views import APIView, View
 from oauth2_provider.models import AccessToken, RefreshToken
+
+from users.models import Account
 from users.serializers import RegisterSerializer, LoginSerializer, RefreshSerializer, CurrentUserSerializer
 
 from rest_framework.permissions import IsAuthenticated
@@ -18,15 +20,18 @@ UserModel = get_user_model()
 
 
 # Create your views here.
-
+URL = 'https://venty-be.herokuapp.com/o/token/'
+# URL = 'http://127.0.0.1:8000/o/token/'
 
 class RegisterView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        user = serializer.save()
+        print(serializer.validated_data['email'])
+        print(serializer.validated_data['password'])
         data = {
             'grant_type': 'password',
             'username': serializer.validated_data['email'],
@@ -34,23 +39,33 @@ class RegisterView(APIView):
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
-        r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
-        # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
+        try:
+            r = requests.post(URL, data=data)
+            if r.status_code != 200:
+                print("user_deleted")
+                user.delete()
+            return Response(r.json(), status=r.status_code)
+        except:
+            user.delete()
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(r.json(), status=r.status_code)
+
+
+
 
 
 class LoginView(APIView):
     permission_classes = (AllowAny,)
-    serializer_class = LoginSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         user = UserModel.objects.get(email=serializer.validated_data['email'])
-
-        token = AccessToken.objects.get(user_id=user.id)
+        try:
+            token = AccessToken.objects.get(user_id=user.id)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         refresh_token = RefreshToken.objects.get(access_token_id=token.id)
         data = {
             'grant_type': 'refresh_token',
@@ -58,10 +73,11 @@ class LoginView(APIView):
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
         }
-        r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
-        # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
-
-        return Response(r.json(), r.status_code)
+        try:
+            r = requests.post(URL, data=data)
+            return Response(r.json(), r.status_code)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class RefreshView(APIView):
@@ -77,8 +93,7 @@ class RefreshView(APIView):
                    'client_id': CLIENT_ID,
                    'client_secret': CLIENT_SECRET,
                },
-        r = requests.post('https://venty-be.herokuapp.com/o/token/', data=data)
-        # r = requests.post('http://127.0.0.1:8000/o/token/', data=data)
+        r = requests.post(URL, data=data)
 
         return Response(r.json(), r.status_code)
 
