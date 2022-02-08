@@ -24,4 +24,5 @@ urlpatterns = [
     path('authentication/', include('users.urls')),
     path('', include('events.urls')),
     path('events/', include('extensions.urls')),
+    path('events/', include('guests.urls')),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

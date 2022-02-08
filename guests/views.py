@@ -1,11 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from events.models import Event, Guest
-from events.serializers import EventSerializerList, EventSerializerCreate, GuestSerializerList, GuestSerializerAdd, \
-    GuestSerializerUpdate, AccountSerializer
-
+from events.models import Event
+from guests.models import Guest
+from guests.serializers import GuestSerializerList, GuestSerializerAdd, GuestSerializerUpdate, AccountSerializer
 from rest_framework.permissions import IsAuthenticated
-from oauth2_provider.models import AccessToken
 from rest_framework import status
 from django.contrib.auth import get_user_model
 from users.models import Account
@@ -18,7 +16,7 @@ class EventGuestGetCreate(APIView):
 
     def get(self, request, pk):
         try:
-            event = Event.objects.get(id=pk)
+            event = Event.objects.get(pk=pk)
             if request.user.id == event.event_owner.id:
                 try:
                     guest_event = Guest.objects.filter(event=pk)
