@@ -54,9 +54,8 @@ class Event(models.Model):
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     start_date = models.DateTimeField(null=True, blank=True, default=None)
     end_date = models.DateTimeField(null=True, blank=True, default=None)
-    event_title = models.CharField(max_length=30, default=None,
-                                   help_text="Let your guest know details about this event")
-    description = models.TextField(max_length=1000, blank=True)
+    event_title = models.CharField(max_length=30, default=None)
+    description = models.TextField(max_length=1000, blank=True, help_text="Let your guest know details about this event")
     event_owner = models.ForeignKey(Account, on_delete=models.CASCADE)
     location = models.OneToOneField(Location, on_delete=models.CASCADE)
 

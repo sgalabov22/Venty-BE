@@ -73,11 +73,9 @@ class EventDetailsGetUpdateDelete(APIView):
     def delete(self, request, pk):
         try:
             event = Event.objects.get(id=pk, event_owner=request.user)
-            print(pk)
-            print(request.user)
-            print(event)
-
             event.delete()
             return Response({"message": "The Event has been deleted"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+

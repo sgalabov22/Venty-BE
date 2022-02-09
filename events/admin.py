@@ -16,4 +16,3 @@ admin.site.register(LocationReview)
 admin.site.register(Photos)
 admin.site.register(WorkingHours)
 
-
