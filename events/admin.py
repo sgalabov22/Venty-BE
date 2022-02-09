@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from events.models import Event, Location, LocationPosition, LocationReview, Photos, WorkingHours
+from events.models import Event
 
 
 class EventsAdmin(admin.ModelAdmin):
@@ -10,9 +10,4 @@ class EventsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Event, EventsAdmin)
-admin.site.register(Location)
-admin.site.register(LocationPosition)
-admin.site.register(LocationReview)
-admin.site.register(Photos)
-admin.site.register(WorkingHours)
 

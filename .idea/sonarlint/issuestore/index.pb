@@ -3,8 +3,6 @@
 users/apps.py,5\4\547f374cbbeef99e636bc50f0d5b5ba07651acb5
 M
 events/migrations/__init__.py,1\0\1067ce2f5f9dc255e995addf22630a421743aabe
-A
-events/signals.py,e\f\ef5d1c5c2a2a971e5e8e5b7d786393395c3d668c
 E
 extensions/signals.py,8\1\81b99021f18eb50520ec26eedf99ef4667519956
 C
