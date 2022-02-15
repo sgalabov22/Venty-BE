@@ -2,7 +2,7 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 from extensions.models import Checklist, ChecklistItems, Reminder
 from guests.serializers import AccountSerializer
-from users.models import Account
+
 
 
 class ItemsSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
