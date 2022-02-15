@@ -57,4 +57,4 @@ class Account(AbstractBaseUser, PermissionsMixin):
     objects = VentyUserManager()
 
     def __str__(self):
-        return self.email
+        return f'{self.email}'

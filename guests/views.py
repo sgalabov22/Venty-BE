@@ -37,6 +37,7 @@ class EventGuestGetCreate(APIView):
                 guests = Guest.objects.filter(event_id=pk)
                 list_guests = [guest.guest_user_account.id for guest in guests]
                 data = [record for record in request.data if record["guest_user_account"] not in list_guests]
+                print(data)
                 if len(data) != 0:
                     serializer_data = GuestSerializerAdd(data=data, many=True)
                     serializer_data.is_valid(raise_exception=True)
@@ -53,12 +54,11 @@ class EventGuestUpdate(APIView):
 
     def put(self, request, pk, guest_pk):
         try:
-            guest = Guest.objects.filter(guest_user_account=guest_pk)[0]
+            guest = Guest.objects.get(guest_user_account=guest_pk)
             serializer_guest_data = GuestSerializerUpdate(guest, data=request.data)
-            if serializer_guest_data.is_valid():
-                serializer_guest_data.save()
-                return Response(serializer_guest_data.validated_data, status=status.HTTP_200_OK)
-            return Response(serializer_guest_data.errors)
+            serializer_guest_data.is_valid(raise_exception=True)
+            serializer_guest_data.save()
+            return Response(serializer_guest_data.validated_data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
 
