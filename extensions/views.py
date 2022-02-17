@@ -10,7 +10,8 @@ from extensions.serializers import ChecklistSerializer, ChecklistSerializerCreat
 from guests.models import Guest
 from guests.serializers import AccountSerializer
 from users.models import Account
-from utility_functions.common import current_checklist_viewers, current_reminder_viewers, guests, event_guests
+from utility_functions.common import current_checklist_viewers, current_reminder_viewers, event_guests, \
+    event_guest_emails, checklist_viewers_emails, reminder_viewers_emails, viewers
 
 
 class ExtensionsGetCreate(APIView):
@@ -32,7 +33,7 @@ class ExtensionsGetCreate(APIView):
 
     def post(self, request, pk):
         try:
-            if request.query_params['type'] == "checklist" and request.user.id in event_guests(pk):
+            if request.query_params['type'] == "checklist" and request.user in event_guests(pk):
                 serializer_data = ChecklistSerializerCreate(data=request.data)
                 serializer_data.is_valid(raise_exception=True)
                 event = Event.objects.get(id=pk)
@@ -48,6 +49,7 @@ class ExtensionsGetCreate(APIView):
                 reminder_extension_last = Reminder.objects.last()
                 reminder_extension_last.viewers.add(request.user)
                 return Response(serializer_data.data, status=status.HTTP_201_CREATED)
+            return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
         except ObjectDoesNotExist:
             return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -57,11 +59,11 @@ class ExtensionsDetailsUpdate(APIView):
 
     def get(self, request, pk, ext_id):
         data = {}
-        if request.query_params['type'] == "checklist":
+        if request.query_params['type'] == "checklist" and request.user in current_checklist_viewers(pk, ext_id):
             checklists_ext = Checklist.objects.filter(event=pk, id=ext_id, viewers=request.user.id)
             serializer_checklist_data = ChecklistSerializerDetails(checklists_ext, many=True)
             data["checklist"] = [record for record in serializer_checklist_data.data]
-        elif request.query_params['type'] == "reminder":
+        elif request.query_params['type'] == "reminder" and request.user in current_reminder_viewers(pk, ext_id):
             reminders_ext = Reminder.objects.filter(event=pk, id=ext_id, viewers=request.user.id)
             serializer_reminder_data = ReminderSerializerDetails(reminders_ext, many=True)
             data["reminder"] = [record for record in serializer_reminder_data.data]
@@ -70,34 +72,38 @@ class ExtensionsDetailsUpdate(APIView):
         return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, ext_id):
-        if request.query_params['type'] == "checklist" and request.user in current_checklist_viewers(pk, ext_id):
-            checklists_ext = Checklist.objects.filter(event=pk, id=ext_id, viewers=request.user.id)[0]
-            serializer_data = ChecklistSerializer(checklists_ext, request.data)
-            serializer_data.is_valid(raise_exception=True)
-            event = Event.objects.get(id=pk)
-            serializer_data.save(event=event)
-            return Response(serializer_data.data, status=status.HTTP_200_OK)
-        elif request.query_params['type'] == "reminder" and request.user in current_reminder_viewers(pk, ext_id):
-            reminder_ext = Reminder.objects.filter(event=pk, id=ext_id, viewers=request.user.id)[0]
-            serializer_data = ReminderSerializer(reminder_ext, request.data)
-            serializer_data.is_valid(raise_exception=True)
-            event = Event.objects.get(id=pk)
-            serializer_data.save(event=event)
-            return Response(serializer_data.data, status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        try:
+            if request.query_params['type'] == "checklist" and request.user in current_checklist_viewers(pk, ext_id):
+                checklists_ext = Checklist.objects.filter(event=pk, id=ext_id, viewers=request.user.id)[0]
+                serializer_data = ChecklistSerializer(checklists_ext, request.data)
+                serializer_data.is_valid(raise_exception=True)
+                event = Event.objects.get(id=pk)
+                serializer_data.save(event=event)
+                return Response(serializer_data.data, status=status.HTTP_200_OK)
+            elif request.query_params['type'] == "reminder" and request.user in current_reminder_viewers(pk, ext_id):
+                reminder_ext = Reminder.objects.filter(event=pk, id=ext_id, viewers=request.user.id)[0]
+                serializer_data = ReminderSerializer(reminder_ext, request.data)
+                serializer_data.is_valid(raise_exception=True)
+                event = Event.objects.get(id=pk)
+                serializer_data.save(event=event)
+                return Response(serializer_data.data, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, ext_id):
-        if request.query_params['type'] == "checklist":
-            checklists_ext = Checklist.objects.filter(event=pk, id=ext_id, viewers=request.user.id)
-            if checklists_ext:
-                checklists_ext.delete()
-                return Response({"message": "The Extension has been deleted"}, status=status.HTTP_200_OK)
-        elif request.query_params['type'] == "reminder":
-            reminder_ext = Reminder.objects.filter(event=pk, id=ext_id, viewers=request.user.id)
-            if reminder_ext:
-                reminder_ext[0].delete()
-                return Response({"message": "The Extension has been deleted"}, status=status.HTTP_200_OK)
-        return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            if request.query_params['type'] == "checklist":
+                checklists_ext = Checklist.objects.filter(event=pk, id=ext_id, viewers=request.user.id)
+                if checklists_ext:
+                    checklists_ext.delete()
+                    return Response({"message": "The Extension has been deleted"}, status=status.HTTP_200_OK)
+            elif request.query_params['type'] == "reminder":
+                reminder_ext = Reminder.objects.filter(event=pk, id=ext_id, viewers=request.user.id)
+                if reminder_ext:
+                    reminder_ext[0].delete()
+                    return Response({"message": "The Extension has been deleted"}, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ExtensionsCatalogViewers(APIView):
@@ -105,42 +111,64 @@ class ExtensionsCatalogViewers(APIView):
 
     def get(self, request, pk, ext_id):
         if request.query_params['type'] == "checklist" and request.user in current_checklist_viewers(pk, ext_id):
-            available_viewers = [viewer for viewer in guests(pk) if viewer not in current_checklist_viewers(pk, ext_id)]
-            serializer_user_catalog = AccountSerializer(available_viewers, many=True)
+            serializer_user_catalog = AccountSerializer(viewers(pk, ext_id, current_checklist_viewers), many=True)
             return Response(serializer_user_catalog.data, status=status.HTTP_200_OK)
         elif request.query_params['type'] == "reminder" and request.user in current_reminder_viewers(pk, ext_id):
-            available_viewers = [viewer for viewer in guests(pk) if viewer not in current_reminder_viewers(pk, ext_id)]
-            serializer_user_catalog = AccountSerializer(available_viewers, many=True)
+            serializer_user_catalog = AccountSerializer(viewers(pk, ext_id, current_reminder_viewers), many=True)
             return Response(serializer_user_catalog.data, status=status.HTTP_200_OK)
         return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, pk, ext_id):
         if request.query_params['type'] == "checklist" and request.user in current_checklist_viewers(pk, ext_id):
-            request_emails = [record['email'] for record in request.data]
-            current_event_guests = Guest.objects.filter(event=pk)
-            guest_emails = [record.guest_user_account.email for record in current_event_guests]
-            checklist = Checklist.objects.get(event=pk, id=ext_id)
-            current_checklist_emails = [record.email for record in checklist.viewers.all()]
+            try:
+                email = request.data['email']
+                checklist = Checklist.objects.get(event=pk, id=ext_id)
 
-            for email in request_emails:
-                if email in guest_emails and email not in current_checklist_emails:
-                    user = Account.objects.get(email=email)
-                    checklist.viewers.add(user)
+                if email in event_guest_emails(pk) and email not in checklist_viewers_emails(pk, ext_id):
+                    checklist.viewers.add(Account.objects.get(email=email))
 
-            serializer_data = ChecklistSerializer(checklist)
-            return Response(serializer_data.data, status=status.HTTP_200_OK)
+                serializer_data = ChecklistSerializer(checklist)
+                return Response(serializer_data.data, status=status.HTTP_200_OK)
+            except:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         elif request.query_params['type'] == "reminder" and request.user in current_reminder_viewers(pk, ext_id):
-            request_emails = [record['email'] for record in request.data]
-            current_event_guests = Guest.objects.filter(event=pk)
-            guest_emails = [record.guest_user_account.email for record in current_event_guests]
-            reminder = Reminder.objects.get(event=pk, id=ext_id)
-            current_reminder_emails = [record.email for record in reminder.viewers.all()]
+            try:
+                email = request.data['email']
+                reminder = Reminder.objects.get(event=pk, id=ext_id)
 
-            for email in request_emails:
-                if email in guest_emails and email not in current_reminder_emails:
-                    user = Account.objects.get(email=email)
-                    reminder.viewers.add(user)
+                if email in event_guest_emails(pk) and email not in reminder_viewers_emails(pk, ext_id):
+                    reminder.viewers.add(Account.objects.get(email=email))
 
-            serializer_data = ReminderSerializer(reminder)
-            return Response(serializer_data.data, status=status.HTTP_200_OK)
+                serializer_data = ReminderSerializer(reminder)
+                return Response(serializer_data.data, status=status.HTTP_200_OK)
+            except:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk, ext_id):
+
+        if request.query_params['type'] == "checklist" and request.user in current_checklist_viewers(pk, ext_id):
+            try:
+                email = request.data['email']
+                checklist = Checklist.objects.get(event=pk, id=ext_id)
+
+                if email in event_guest_emails(pk) and email in checklist_viewers_emails(pk, ext_id):
+                    checklist.viewers.remove(Account.objects.get(email=email))
+
+                serializer_data = ChecklistSerializer(checklist)
+                return Response(serializer_data.data, status=status.HTTP_200_OK)
+            except:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        elif request.query_params['type'] == "reminder" and request.user in current_reminder_viewers(pk, ext_id):
+            try:
+                email = request.data['email']
+                reminder = Reminder.objects.get(event=pk, id=ext_id)
+
+                if email in event_guest_emails(pk) and email in reminder_viewers_emails(pk, ext_id):
+                    reminder.viewers.remove(Account.objects.get(email=email))
+
+                serializer_data = ReminderSerializer(reminder)
+                return Response(serializer_data.data, status=status.HTTP_200_OK)
+            except:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
