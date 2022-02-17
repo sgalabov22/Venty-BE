@@ -41,13 +41,15 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'events.apps.EventsConfig',
-    'extensions',
-    'guests'
+    'extensions.apps.ExtensionsConfig',
+    'guests',
+    "django_apscheduler"
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -94,7 +96,7 @@ WSGI_APPLICATION = 'venty.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-
+#
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
@@ -166,6 +168,8 @@ STATICFILES_DIRS = (join(BASE_DIR, 'static'),)
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -178,7 +182,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CLIENT_ID = 'R8ZshMuOEd6kSOpYIeWKevin1Luux0jK59bb2op3'
 # CLIENT_SECRET = 'jioi6ybvh8wLZOaFkWjVJ9knIYtHryV9Ushs74qGqhUHdD4vyt24tsrKPIQvZ3bDMLnZQkR8c92bhSjJFURVf6B05u2XEGpDF3G7qyWK8uCg1JiTpfgDfn81vL9IHRpR'
 
-#HEROKU
+# HEROKU
 CLIENT_ID = 'eppJMx099qkibkNJfAZ1sMmj4Xn3eSjJZkoQ9vSG'
 CLIENT_SECRET = '3esZkasgmZsEkOwsm03NjKMb9Hw5nARSaBeAWN7mpvAMgjQWecry1zlBQNkdTbZboidy730OgN9NhAGA9U1jfDr3iBDGP3yoLxkZfQzi0w0Q7FldY1AZ8A1muHp0WMa9'
 
@@ -189,3 +193,10 @@ cloudinary.config(
     api_secret="zmrAQXommqofywnVJENgkIk9sx8",
     secure=True
 )
+
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'ventybe@gmail.com'
+EMAIL_HOST_PASSWORD = 'Zaredi123!'
+EMAIL_USE_TLS = True

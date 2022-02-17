@@ -4,6 +4,7 @@ from extensions.models import Checklist, ChecklistItems, Reminder
 from guests.serializers import AccountSerializer
 
 
+
 class ItemsSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
     class Meta:
         model = ChecklistItems
@@ -20,26 +21,24 @@ class ChecklistSerializer(WritableNestedModelSerializer, serializers.ModelSerial
 
     class Meta:
         model = Checklist
-        fields = "__all__"
+        fields = ['id', 'name', 'event', 'items', 'viewers']
 
 
-class ReminderSerializer(serializers.ModelSerializer):
+class ReminderSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
     viewers = ViewersSerializer(required=False, many=True)
 
     class Meta:
         model = Reminder
-        fields = "__all__"
+        fields = ['id', 'name', 'scheduled', 'email_body', 'event', 'viewers']
 
 
 class ChecklistSerializerCreate(ChecklistSerializer, WritableNestedModelSerializer):
-
     class Meta:
         model = Checklist
         exclude = ("id",)
 
 
 class ReminderSerializerCreate(ReminderSerializer, WritableNestedModelSerializer):
-
     class Meta:
         model = Reminder
         exclude = ("id",)
@@ -51,4 +50,3 @@ class ChecklistSerializerDetails(ChecklistSerializerCreate):
 
 class ReminderSerializerDetails(ReminderSerializerCreate):
     pass
-

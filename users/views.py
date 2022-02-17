@@ -18,9 +18,10 @@ from venty.settings import CLIENT_ID, CLIENT_SECRET
 
 UserModel = get_user_model()
 
-
 # Create your views here.
 URL = 'https://venty-be.herokuapp.com/o/token/'
+
+
 # URL = 'http://127.0.0.1:8000/o/token/'
 
 class RegisterView(APIView):
@@ -48,10 +49,6 @@ class RegisterView(APIView):
         except:
             user.delete()
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
 
 
 class LoginView(APIView):

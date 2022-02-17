@@ -15,7 +15,7 @@ class Checklist(models.Model):
     name = models.CharField(max_length=30, default=None)
     items = models.ManyToManyField(ChecklistItems)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None)
-    viewers = models.ManyToManyField(Account)
+    viewers = models.ManyToManyField(Account, unique=False)
 
     def __str__(self):
         return f"{self.items}"
@@ -26,4 +26,4 @@ class Reminder(models.Model):
     scheduled = models.DateTimeField(null=True, blank=True, default=None)
     email_body = models.TextField(blank=True)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None)
-    viewers = models.ManyToManyField(Account)
+    viewers = models.ManyToManyField(Account, unique=False)

@@ -7,3 +7,6 @@ class EventsConfig(AppConfig):
 
     def ready(self):
         import events.signals
+        import extensions.signals
+        # from jobs import updater
+        # updater.start()
