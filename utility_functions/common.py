@@ -14,12 +14,27 @@ def current_reminder_viewers(pk, ext_id):
     return viewers
 
 
-def guests(pk):
-    guests = Guest.objects.filter(event_id=pk)
-    list_guests = [guest.guest_user_account for guest in guests]
-    return list_guests
-
-
 def event_guests(pk):
-    guests = [guest_event.guest_user_account_id for guest_event in Guest.objects.filter(event=pk)]
+    guests = [guest_event.guest_user_account for guest_event in Guest.objects.filter(event=pk)]
     return guests
+
+
+def event_guest_emails(pk):
+    guest_emails = [record.guest_user_account.email for record in Guest.objects.filter(event=pk)]
+    return guest_emails
+
+
+def checklist_viewers_emails(pk, ext_id):
+    viewers_emails = [record.email for record in Checklist.objects.get(event=pk, id=ext_id).viewers.all()]
+    return viewers_emails
+
+
+def reminder_viewers_emails(pk, ext_id):
+    viewers_emails = [record.email for record in Reminder.objects.get(event=pk, id=ext_id).viewers.all()]
+    return viewers_emails
+
+
+def viewers(pk, ext_id, current_viewers):
+    available_viewers = [viewer for viewer in event_guests(pk) if
+                         viewer not in current_viewers(pk, ext_id)]
+    return available_viewers
