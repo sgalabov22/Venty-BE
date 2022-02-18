@@ -54,7 +54,7 @@ class EventGuestUpdate(APIView):
 
     def put(self, request, pk, guest_pk):
         try:
-            guest = Guest.objects.get(guest_user_account=guest_pk)
+            guest = Guest.objects.get(event=pk, guest_user_account=guest_pk)
             serializer_guest_data = GuestSerializerUpdate(guest, data=request.data)
             serializer_guest_data.is_valid(raise_exception=True)
             serializer_guest_data.save()
