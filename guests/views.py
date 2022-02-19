@@ -9,6 +9,8 @@ from django.contrib.auth import get_user_model
 from users.models import Account
 from django.core.exceptions import ObjectDoesNotExist
 
+from utility_functions.common import event_guests
+
 UserModel = get_user_model()
 
 
@@ -18,8 +20,7 @@ class EventGuestGetCreate(APIView):
 
     def get(self, request, pk):
         try:
-            event = Event.objects.get(pk=pk)
-            if request.user.id == event.event_owner.id:
+            if request.user in event_guests(pk):
                 try:
                     guest_event = Guest.objects.filter(event=pk)
                     serializer_guest_data = GuestSerializerList(guest_event, many=True)
@@ -37,7 +38,6 @@ class EventGuestGetCreate(APIView):
                 guests = Guest.objects.filter(event_id=pk)
                 list_guests = [guest.guest_user_account.id for guest in guests]
                 data = [record for record in request.data if record["guest_user_account"] not in list_guests]
-                print(data)
                 if len(data) != 0:
                     serializer_data = GuestSerializerAdd(data=data, many=True)
                     serializer_data.is_valid(raise_exception=True)
