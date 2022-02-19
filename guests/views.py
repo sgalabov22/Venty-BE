@@ -71,7 +71,7 @@ class EventGuestCatalogUsers(APIView):
             if request.user.id == event.event_owner_id:
                 guests = Guest.objects.filter(event_id=pk)
                 accounts = Account.objects.all()
-                list_guests = [guest.guest_user_account.id for guest in guests]
+                list_guests = [guest.id for guest in guests]
                 available_guests = [record for record in accounts if record.id not in list_guests]
                 serializer_user_catalog = AccountSerializer(available_guests, many=True)
                 return Response(serializer_user_catalog.data, status=status.HTTP_200_OK)
