@@ -14,7 +14,7 @@ class GuestSerializerList(serializers.ModelSerializer):
 
     class Meta:
         model = Guest
-        fields = ["guest_user_account", "status", "event"]
+        fields = ["id", "guest_user_account", "status", "event"]
 
 
 class GuestSerializerAdd(serializers.ModelSerializer):

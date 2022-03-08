@@ -9,6 +9,8 @@ from django.contrib.auth import get_user_model
 from users.models import Account
 from django.core.exceptions import ObjectDoesNotExist
 
+from utility_functions.common import event_guests
+
 UserModel = get_user_model()
 
 
@@ -18,8 +20,7 @@ class EventGuestGetCreate(APIView):
 
     def get(self, request, pk):
         try:
-            event = Event.objects.get(pk=pk)
-            if request.user.id == event.event_owner.id:
+            if request.user in event_guests(pk):
                 try:
                     guest_event = Guest.objects.filter(event=pk)
                     serializer_guest_data = GuestSerializerList(guest_event, many=True)
@@ -37,7 +38,6 @@ class EventGuestGetCreate(APIView):
                 guests = Guest.objects.filter(event_id=pk)
                 list_guests = [guest.guest_user_account.id for guest in guests]
                 data = [record for record in request.data if record["guest_user_account"] not in list_guests]
-                print(data)
                 if len(data) != 0:
                     serializer_data = GuestSerializerAdd(data=data, many=True)
                     serializer_data.is_valid(raise_exception=True)
@@ -54,14 +54,13 @@ class EventGuestUpdate(APIView):
 
     def put(self, request, pk, guest_pk):
         try:
-            guest = Guest.objects.get(guest_user_account=guest_pk)
+            guest = Guest.objects.get(event=pk, id=guest_pk)
             serializer_guest_data = GuestSerializerUpdate(guest, data=request.data)
             serializer_guest_data.is_valid(raise_exception=True)
             serializer_guest_data.save()
             return Response(serializer_guest_data.validated_data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({"message": "Not found"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class EventGuestCatalogUsers(APIView):
     permission_classes = (IsAuthenticated,)

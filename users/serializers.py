@@ -49,4 +49,4 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        exclude = ('id', 'password')
+        exclude = ('password',)

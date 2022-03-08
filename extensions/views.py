@@ -41,7 +41,8 @@ class ExtensionsGetCreate(APIView):
                 checklist_extension_last = Checklist.objects.last()
                 checklist_extension_last.viewers.add(request.user)
                 return Response(serializer_data.data, status=status.HTTP_201_CREATED)
-            elif request.query_params['type'] == "reminder" and request.user.id in event_guests(pk):
+            elif request.query_params['type'] == "reminder" and request.user in event_guests(pk):
+                print("here")
                 serializer_data = ReminderSerializerCreate(data=request.data)
                 serializer_data.is_valid(raise_exception=True)
                 event = Event.objects.get(id=pk)
